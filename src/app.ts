@@ -12,14 +12,24 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Server is running')
 })
 
-app.use((err: any, req: Request, res: Response, next: any) => {
-  res.status(err.statusCode).send({
+app.use((req, res, next) => {
+  res.status(404).json({
     success: false,
-    status: err.statusCode || 500,
+    status: 404,
+    message: `api not found at ${req.originalUrl}`,
+  });
+});
+
+app.use((err: any, req: Request, res: Response, next: any) => {
+  const statusCode = err.statusCode || 500;
+  res.status(statusCode).send({
+    success: false,
+    status: statusCode,
     message: err.message || 'Internal Server Error',
     stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
-  })
-})
+  });
+});
+
 
 
 export default app

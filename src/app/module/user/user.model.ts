@@ -1,6 +1,7 @@
 import { model, Schema } from "mongoose";
 import { TUser } from "./user.interface";
 import bcrypt from 'bcrypt';
+import config from "../../config";
 
 const userSchema = new Schema<TUser>({
      
@@ -19,6 +20,7 @@ const userSchema = new Schema<TUser>({
     password: {
       type: String,
       required: true,
+      select: false, // Do not return password in queries
     },
     role: {
       type: String,
@@ -68,9 +70,29 @@ const userSchema = new Schema<TUser>({
 
 
 userSchema.pre('save', async function (next){
-  this.password = await bcrypt.hash(this.password, 8)
+  this.password = await bcrypt.hash(this.password, Number(config.bcrypt_salt_round))
   next()
 
 })
+
+userSchema.post('save', function (doc,next){
+  doc.password=''
+  next()
+})
+
+userSchema.pre('find', function (next){
+  this.find({isDeleted:{$ne:true},isBlocked:{$ne:true}})
+  next()
+})
+userSchema.pre('findOne', function (next){
+  this.findOne({isDeleted:{$ne:true},isBlocked:{$ne:true}})
+  next()
+})
+userSchema.pre('findOneAndUpdate', function (next){
+  this.findOneAndUpdate({isDeleted:{$ne:true},isBlocked:{$ne:true}})
+  next()
+})
+
+
 
 export const User = model<TUser>("User", userSchema);
