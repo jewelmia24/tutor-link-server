@@ -1,4 +1,5 @@
-import { model, Schema } from "mongoose";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { model, Query, Schema } from "mongoose";
 import { TUser } from "./user.interface";
 import bcrypt from 'bcrypt';
 import config from "../../config";
@@ -80,18 +81,23 @@ userSchema.post('save', function (doc,next){
   next()
 })
 
-userSchema.pre('find', function (next){
-  this.find({isDeleted:{$ne:true},isBlocked:{$ne:true}})
-  next()
-})
-userSchema.pre('findOne', function (next){
-  this.findOne({isDeleted:{$ne:true},isBlocked:{$ne:true}})
-  next()
-})
-userSchema.pre('findOneAndUpdate', function (next){
-  this.findOneAndUpdate({isDeleted:{$ne:true},isBlocked:{$ne:true}})
-  next()
-})
+// userSchema.pre('find', function (next){
+//   this.find({isDeleted:{$ne:true},isBlocked:{$ne:true}})
+//   next()
+// })
+// userSchema.pre('findOne', function (next){
+//   this.findOne({isDeleted:{$ne:true},isBlocked:{$ne:true}})
+//   next()
+// })
+// userSchema.pre('findOneAndUpdate', function (next){
+//   this.findOneAndUpdate({isDeleted:{$ne:true},isBlocked:{$ne:true}})
+//   next()
+// })
+
+userSchema.pre(/^find/, function (next) {
+  (this as Query<any, any>).where({ isDeleted: { $ne: true }, isBlocked: { $ne: true } });
+  next();
+});
 
 
 
