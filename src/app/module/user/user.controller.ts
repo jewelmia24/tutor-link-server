@@ -5,6 +5,7 @@ import { StatusCodes } from "http-status-codes";
 
 const getAllusers = catchAsync(async (req, res) => {
     const result = await userService.getAllusers();
+    
     sendResponse(res, {
         message: "Users retrieved successfully",
         statusCode: StatusCodes.OK,

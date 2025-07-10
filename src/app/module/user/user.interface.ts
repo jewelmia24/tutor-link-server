@@ -1,3 +1,5 @@
+import { USER_ROLE } from "./user.constant";
+
 export type TUser = {
   name: string;
   email: string;
@@ -18,3 +20,6 @@ export type TUser = {
   isBlocked?: boolean;
 
 }
+
+
+export type TUserRole = keyof typeof USER_ROLE

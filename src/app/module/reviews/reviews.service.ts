@@ -5,7 +5,7 @@ import { User } from "../user/user.model";
 import { TReview } from "./reviews.interface";
 import { Review } from "./reviews.model";
 
-const createReview = async (payload:TReview) =>{
+const createReviews = async (payload:TReview) =>{
     const { tutorId,rating} = payload
     const isTutorExists = await User.exists({ _id:tutorId})
     if (!isTutorExists) {
@@ -29,8 +29,13 @@ const getTutorReviews = async (tutorId:string) => {
 
 }
 
+const deleteReviews = async () =>{
+
+}
+
 
 export const ReviewsService = {
-    createReview,
+    createReviews,
     getTutorReviews,
+    deleteReviews
 };
